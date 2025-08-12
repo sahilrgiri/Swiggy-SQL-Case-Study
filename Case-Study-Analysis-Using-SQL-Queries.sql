@@ -1,23 +1,22 @@
 -----
 --1. How many customers have not placed any orders?
-select user_id from users
-where user_id not in (
-    select distinct user_id from orders
-    where user_id is not null
+SELECT user_id
+FROM users
+WHERE user_id NOT IN (
+    SELECT user_id
+    FROM orders
+    WHERE user_id IS NOT NULL
 );
 
+
 --2a. What is the average price of each food type?
- with food_details as(
-    select * from food f
-    inner join menu m
-    on f.f_id = m.f_id
-)
-select type, round(avg(price),2) as "Average Price",
-median(price) as "Median Price",
-stats_mode(price) as "Mode Price"
-from food_details
-group by type
-order by "Average Price" desc;
+SELECT f.f_type,
+       ROUND(AVG(m.price), 2) AS avg_price
+FROM food f
+JOIN menu m
+  ON f.f_id = m.f_id
+GROUP BY f.f_type;
+
 
 --2b. What is the average price of food for each restaurant?
 with restaurant_details as (
